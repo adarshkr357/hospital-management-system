@@ -1,0 +1,32 @@
+CREATE_STAFF_TABLES = """
+CREATE TABLE IF NOT EXISTS departments (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS staff (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    department_id INTEGER REFERENCES departments(id),
+    full_name VARCHAR(255) NOT NULL,
+    designation VARCHAR(100) NOT NULL,
+    specialization VARCHAR(100),
+    qualification TEXT,
+    contact_number VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    joining_date DATE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS staff_schedules (
+    id SERIAL PRIMARY KEY,
+    staff_id INTEGER REFERENCES staff(id) ON DELETE CASCADE,
+    day_of_week INTEGER NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+"""
