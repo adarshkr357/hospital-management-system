@@ -162,53 +162,6 @@ The API will be available at `http://localhost:8000`
 - `GET /api/v1/staff/`: List all staff members
 - `GET /api/v1/appointments/`: List all appointments
 
-## Testing
-
-Run tests using pytest:
-```bash
-pytest
-```
-
-Run tests with coverage:
-```bash
-pytest --cov=app tests/
-```
-
-## Development
-
-1. Code Style
-- Follow PEP 8 guidelines
-- Use type hints
-- Write docstrings for functions and classes
-
-2. Database Migrations
-- Create new migration:
-```bash
-alembic revision --autogenerate -m "description"
-```
-- Apply migrations:
-```bash
-alembic upgrade head
-```
-
-3. Adding New Features
-- Create new endpoints in `app/api/v1/endpoints/`
-- Add models in `app/models/`
-- Add schemas in `app/schemas/`
-- Add services in `app/services/`
-
-## Docker Support
-
-1. Build the image:
-```bash
-docker build -t hospital-management-api .
-```
-
-2. Run the container:
-```bash
-docker run -d -p 8000:8000 --name hospital-api hospital-management-api
-```
-
 ## Security
 
 - API is protected with JWT authentication
@@ -239,7 +192,7 @@ The API uses standard HTTP status codes:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the [MIT License](../LICENSE) - see the LICENSE file for details.
 
 ## Troubleshooting
 
