@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List, Optional
 from datetime import datetime, date
+from pydantic import BaseModel
 from ....core.security import get_current_user, check_permissions
 from ....utils.db_utils import execute_query
 from ....utils.date_utils import validate_date_range
@@ -8,6 +9,27 @@ from ....sql.queries.finance_queries import *
 
 router = APIRouter()
 
+class FinancialOverviewOut(BaseModel):
+    daily_revenue: float
+    monthly_revenue: float
+    outstanding_amount: float
+
+class FinancialReportOut(BaseModel):
+    id: int
+    date: date
+    department_id: int
+    amount: float
+    type: str
+    source: str
+
+# Financial overview query
+GET_FINANCIAL_OVERVIEW_QUERY = """
+    SELECT 
+        (SELECT COALESCE(SUM(amount), 0) FROM revenue WHERE date = CURRENT_DATE AND type = 'DAILY') AS daily_revenue,
+        (SELECT COALESCE(SUM(amount), 0) FROM revenue WHERE date_trunc('month', date) = date_trunc('month', CURRENT_DATE) AND type = 'MONTHLY') AS monthly_revenue,
+        (SELECT COALESCE(SUM(amount), 0) FROM bills WHERE status IN ('PENDING', 'OVERDUE')) AS outstanding_amount
+    ;
+"""
 
 @router.get("/bills")
 async def get_all_bills(
@@ -38,6 +60,15 @@ async def get_all_bills(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/overview", response_model=FinancialOverviewOut)
+def get_financial_overview(current_user: dict = Depends(get_current_user)):
+    """
+    Get an overview of financial metrics including daily and monthly revenue, as well as outstanding amounts.
+    """
+    report = execute_query(GET_FINANCIAL_OVERVIEW_QUERY, fetch_one=True)
+    if not report:
+        raise HTTPException(status_code=404, detail="Financial overview not available")
+    return report
 
 @router.post("/bills")
 async def create_bill(
@@ -135,3 +166,13 @@ async def create_insurance_claim(
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/reports", response_model=List[FinancialReportOut])
+def get_financial_reports(current_user: dict = Depends(get_current_user)):
+    """
+    Return a list of financial reports.
+    """
+    reports = execute_query(GET_FINANCE_REPORTS_QUERY, fetch_all=True)
+    if reports is None:
+        raise HTTPException(status_code=404, detail="No financial reports available")
+    return reports

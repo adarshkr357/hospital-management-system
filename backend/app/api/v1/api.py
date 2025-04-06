@@ -8,6 +8,7 @@ from .endpoints import (
     appointment,
     admission,
     notification,
+    admin
 )
 
 # Create API router
@@ -34,4 +35,8 @@ api_router.include_router(admission.router, prefix="/admission", tags=["Admissio
 
 api_router.include_router(
     notification.router, prefix="/notification", tags=["Notification"]
+)
+
+api_router.include_router(
+    admin.router, prefix="/admin", tags=["Admin"]
 )

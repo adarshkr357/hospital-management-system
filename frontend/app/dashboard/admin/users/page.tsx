@@ -4,7 +4,7 @@ import { swrFetcher } from "@/app/lib/api";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
 
 export default function AdminUsers() {
-  const { data, error } = useSWR("/users", swrFetcher);
+  const { data, error } = useSWR("/admin/users", swrFetcher);
 
   if (error) return <div>Error loading users.</div>;
   if (!data) return <LoadingSpinner />;

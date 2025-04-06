@@ -13,8 +13,7 @@ GET_USER_BY_EMAIL_QUERY = """
 
 UPDATE_PASSWORD_QUERY = """
     UPDATE users
-    SET password = %s,
-        updated_at = NOW()
+    SET password = %s
     WHERE email = %s
     RETURNING id;
 """

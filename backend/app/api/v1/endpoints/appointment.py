@@ -42,7 +42,7 @@ async def get_all_appointments(
 @router.post("/")
 async def create_appointment(
     appointment_data: dict,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR", "STAFF"])),
+    current_user: dict = Depends(check_permissions(["ADMIN", "FINANCE", "STAFF"])),
 ):
     """Create new appointment"""
     try:
@@ -75,7 +75,7 @@ async def update_appointment_status(
     appointment_id: int,
     status: str,
     notes: Optional[str] = None,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR"])),
+    current_user: dict = Depends(check_permissions(["ADMIN"])),
 ):
     """Update appointment status"""
     valid_statuses = ["SCHEDULED", "COMPLETED", "CANCELLED", "NO_SHOW"]

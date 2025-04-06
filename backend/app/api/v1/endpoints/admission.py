@@ -3,7 +3,6 @@ from typing import List, Optional
 from datetime import datetime, date
 from ....core.security import get_current_user, check_permissions
 from ....utils.db_utils import execute_query
-from ....utils.date_utils import validate_date_range
 from ....sql.queries.admission_queries import *
 
 router = APIRouter()
@@ -31,7 +30,7 @@ async def get_all_admissions(
 @router.post("/")
 async def create_admission(
     admission_data: dict,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR"])),
+    current_user: dict = Depends(check_permissions(["ADMIN", "FINANCE", "STAFF"])),
 ):
     """Create new admission"""
     try:
@@ -67,7 +66,7 @@ async def create_admission(
 async def discharge_patient(
     admission_id: int,
     discharge_data: dict,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR"])),
+    current_user: dict = Depends(check_permissions(["ADMIN", "FINANCE", "STAFF"])),
 ):
     """Discharge patient"""
     try:

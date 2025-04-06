@@ -19,7 +19,7 @@ GET_ADMISSION_BY_ID_QUERY = """
 CREATE_ADMISSION_QUERY = """
     INSERT INTO admissions (
         patient_id, bed_number, admission_date,
-        expected_discharge_date, status, notes
+        expected_discharge_date, status, discharge_summary
     )
     VALUES (%s, %s, %s, %s, 'ADMITTED', %s)
     RETURNING id;
@@ -32,8 +32,7 @@ UPDATE_ADMISSION_QUERY = """
             WHEN %s = 'DISCHARGED' THEN NOW()
             ELSE actual_discharge_date
         END,
-        discharge_summary = %s,
-        updated_at = NOW()
+        discharge_summary = %s
     WHERE id = %s
     RETURNING id;
 """

@@ -1,7 +1,7 @@
 GET_ALL_PATIENTS_QUERY = """
     SELECT p.*, 
-           COALESCE(json_agg(DISTINCT a) FILTER (WHERE a.id IS NOT NULL), '[]') as allergies,
-           COALESCE(json_agg(DISTINCT m) FILTER (WHERE m.id IS NOT NULL), '[]') as medical_history
+           COALESCE(json_agg(DISTINCT a) FILTER (WHERE a.id IS NOT NULL), '[]') AS allergy_details,
+           COALESCE(json_agg(DISTINCT m) FILTER (WHERE m.id IS NOT NULL), '[]') AS medical_history_details
     FROM patients p
     LEFT JOIN patient_allergies a ON p.id = a.patient_id
     LEFT JOIN patient_medical_history m ON p.id = m.patient_id
@@ -11,8 +11,8 @@ GET_ALL_PATIENTS_QUERY = """
 
 GET_PATIENT_BY_ID_QUERY = """
     SELECT p.*, 
-           COALESCE(json_agg(DISTINCT a) FILTER (WHERE a.id IS NOT NULL), '[]') as allergies,
-           COALESCE(json_agg(DISTINCT m) FILTER (WHERE m.id IS NOT NULL), '[]') as medical_history
+           COALESCE(json_agg(DISTINCT a) FILTER (WHERE a.id IS NOT NULL), '[]') AS allergy_details,
+           COALESCE(json_agg(DISTINCT m) FILTER (WHERE m.id IS NOT NULL), '[]') AS medical_history_details
     FROM patients p
     LEFT JOIN patient_allergies a ON p.id = a.patient_id
     LEFT JOIN patient_medical_history m ON p.id = m.patient_id
@@ -22,26 +22,21 @@ GET_PATIENT_BY_ID_QUERY = """
 
 CREATE_PATIENT_QUERY = """
     INSERT INTO patients (
-        full_name, date_of_birth, gender, blood_group,
-        contact_number, email, address, emergency_contact_name,
-        emergency_contact_number, insurance_provider,
-        insurance_id, created_at
+        user_id, full_name, date_of_birth, contact_number, emergency_contact, blood_group, allergies, current_medications
     )
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     RETURNING id;
 """
 
 UPDATE_PATIENT_QUERY = """
     UPDATE patients
     SET full_name = %s,
+        date_of_birth = %s,
         contact_number = %s,
-        email = %s,
-        address = %s,
-        emergency_contact_name = %s,
-        emergency_contact_number = %s,
-        insurance_provider = %s,
-        insurance_id = %s,
-        updated_at = NOW()
+        emergency_contact = %s,
+        blood_group = %s,
+        allergies = %s,
+        current_medications = %s
     WHERE id = %s
     RETURNING id;
 """
@@ -65,11 +60,11 @@ ADD_MEDICAL_HISTORY_QUERY = """
 """
 
 GET_PATIENT_VISITS_QUERY = """
-    SELECT v.*,
-           d.full_name as doctor_name,
-           d.specialization
-    FROM patient_visits v
-    JOIN staff d ON v.doctor_id = d.id
-    WHERE v.patient_id = %s
-    ORDER BY v.visit_date DESC;
+    SELECT a.*,
+           s.full_name AS doctor_name,
+           s.specialization
+    FROM appointments a
+    JOIN staff s ON a.doctor_id = s.user_id
+    WHERE a.patient_id = %s
+    ORDER BY a.appointment_date DESC;
 """

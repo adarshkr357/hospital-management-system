@@ -7,6 +7,12 @@ GET_ALL_BILLS_QUERY = """
     ORDER BY b.generated_date DESC;
 """
 
+GET_FINANCE_REPORTS_QUERY = """
+    SELECT id, date, department_id, amount, type, source
+    FROM revenue
+    ORDER BY date DESC;
+"""
+
 GET_BILL_BY_ID_QUERY = """
     SELECT b.*, 
            p.full_name as patient_name,
@@ -28,8 +34,7 @@ CREATE_BILL_QUERY = """
 UPDATE_BILL_STATUS_QUERY = """
     UPDATE bills
     SET status = %s,
-        payment_method = %s,
-        updated_at = NOW()
+        payment_method = %s
     WHERE id = %s
     RETURNING id;
 """

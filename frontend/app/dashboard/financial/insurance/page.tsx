@@ -4,7 +4,7 @@ import { swrFetcher } from "@/app/lib/api";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
 
 export default function FinancialInsurance() {
-  const { data, error } = useSWR("/financial/insurance-claims", swrFetcher);
+  const { data, error } = useSWR("/finance/insurance-claims", swrFetcher);
 
   if (error) return <div>Error loading insurance claims.</div>;
   if (!data) return <LoadingSpinner />;

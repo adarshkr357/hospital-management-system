@@ -4,7 +4,7 @@ import { swrFetcher } from "@/app/lib/api";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
 
 export default function FinancialReports() {
-  const { data, error } = useSWR("/financial/reports", swrFetcher);
+  const { data, error } = useSWR("/finance/reports", swrFetcher);
 
   if (error) return <div>Error loading reports data.</div>;
   if (!data) return <LoadingSpinner />;

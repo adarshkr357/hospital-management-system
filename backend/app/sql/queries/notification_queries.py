@@ -15,11 +15,11 @@ CREATE_NOTIFICATION_QUERY = """
 
 MARK_NOTIFICATION_READ_QUERY = """
     UPDATE notifications
-    SET read = TRUE,
-        updated_at = NOW()
+    SET read = TRUE
     WHERE id = %s AND user_id = %s
     RETURNING id;
 """
+
 
 DELETE_NOTIFICATION_QUERY = """
     DELETE FROM notifications

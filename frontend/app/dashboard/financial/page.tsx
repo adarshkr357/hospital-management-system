@@ -7,7 +7,7 @@ import { useEnsureDashboardAccess } from "@/app/hooks/useAuthRedirect";
 export default function FinancialDashboard() {
   useEnsureDashboardAccess(["ADMIN", "FINANCE"]);
 
-  const { data, error } = useSWR("/financial/overview", swrFetcher);
+  const { data, error } = useSWR("/finance/overview", swrFetcher);
 
   if (error) return <div>Error loading financial data.</div>;
   if (!data) return <LoadingSpinner />;

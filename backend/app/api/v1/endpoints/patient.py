@@ -45,7 +45,7 @@ async def get_patient(patient_id: int, current_user: dict = Depends(get_current_
 @router.post("/")
 async def create_patient(
     patient_data: dict,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR", "STAFF"])),
+    current_user: dict = Depends(check_permissions(["ADMIN", "STAFF", "FINANCE"])),
 ):
     """Create new patient"""
     # Validate email and phone
@@ -81,7 +81,7 @@ async def create_patient(
 async def update_patient(
     patient_id: int,
     patient_data: dict,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR", "STAFF"])),
+    current_user: dict = Depends(check_permissions(["ADMIN", "STAFF", "FINANCE"])),
 ):
     """Update patient information"""
     try:
@@ -111,7 +111,7 @@ async def update_patient(
 async def add_patient_allergy(
     patient_id: int,
     allergy_data: dict,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR"])),
+    current_user: dict = Depends(check_permissions(["ADMIN", "STAFF", "FINANCE"])),
 ):
     """Add patient allergy"""
     try:
@@ -135,7 +135,7 @@ async def add_patient_allergy(
 async def add_medical_history(
     patient_id: int,
     history_data: dict,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR"])),
+    current_user: dict = Depends(check_permissions(["ADMIN", "STAFF", "FINANCE"])),
 ):
     """Add medical history entry"""
     try:
@@ -176,7 +176,7 @@ async def get_patient_visits(
 async def record_patient_visit(
     patient_id: int,
     visit_data: dict,
-    current_user: dict = Depends(check_permissions(["ADMIN", "DOCTOR"])),
+    current_user: dict = Depends(check_permissions(["ADMIN", "STAFF", "FINANCE"])),
 ):
     """Record new patient visit"""
     try:
