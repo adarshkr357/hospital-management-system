@@ -1,12 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { apiFetch } from "@/app/lib/api";
 import { useRedirectFromAuthPages } from "@/app/hooks/useAuthRedirect";
 
+// This is the Suspense fallback component
+const SuspenseFallback = () => <div>Loading...</div>;
+
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<SuspenseFallback />}>
+      <ResetPasswordForm />
+    </Suspense>
+  );
+}
+
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token: string = searchParams.get("token") || "";
   const [newPassword, setNewPassword] = useState<string>("");

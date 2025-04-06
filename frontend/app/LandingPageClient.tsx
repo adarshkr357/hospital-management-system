@@ -14,6 +14,7 @@ export default function LandingPageClient({
   testimonials,
 }: LandingPageClientProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -109,56 +110,62 @@ export default function LandingPageClient({
         <section className="py-16 px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Contact Us</h2>
           <div className="max-w-lg mx-auto">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                console.log("Form submitted");
-              }}
-              className="space-y-4"
-            >
-              <div>
-                <label htmlFor="name" className="block">
-                  Name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  className="w-full border rounded px-3 py-2"
-                />
+            {submitted ? (
+              <div className="text-center text-green-600 text-xl font-semibold">
+                Thank you for reaching out!
               </div>
-              <div>
-                <label htmlFor="email" className="block">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  required
-                  rows={4}
-                  className="w-full border rounded px-3 py-2"
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="btn bg-[#1A77F2] text-white border-[#005fd8] w-full font-bold py-2 px-4 rounded"
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setSubmitted(true);
+                }}
+                className="space-y-4"
               >
-                Send Message
-              </button>
-            </form>
+                <div>
+                  <label htmlFor="name" className="block">
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="message" className="block">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    rows={4}
+                    className="w-full border rounded px-3 py-2"
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="btn bg-[#1A77F2] text-white border-[#005fd8] w-full font-bold py-2 px-4 rounded"
+                >
+                  Send Message
+                </button>
+              </form>
+            )}
           </div>
         </section>
       </main>
