@@ -26,7 +26,7 @@ async def get_all_staff(
             query = query.replace(";", " WHERE s.role = %s;")
             params.append(role)
 
-        staff = await execute_query(query, tuple(params), fetch_all=True)
+        staff = execute_query(query, tuple(params), fetch_all=True)
         return staff
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -37,7 +37,7 @@ async def get_staff_member(
     staff_id: int, current_user: dict = Depends(check_permissions(["ADMIN", "HR"]))
 ):
     """Get specific staff member details"""
-    staff = await execute_query(GET_STAFF_BY_ID_QUERY, (staff_id,), fetch_one=True)
+    staff = execute_query(GET_STAFF_BY_ID_QUERY, (staff_id,), fetch_one=True)
     if not staff:
         raise HTTPException(status_code=404, detail="Staff member not found")
     return staff
@@ -55,7 +55,7 @@ async def create_staff_member(
         raise HTTPException(status_code=400, detail="Invalid phone number")
 
     try:
-        result = await execute_query(
+        result = execute_query(
             CREATE_STAFF_QUERY,
             (
                 staff_data["full_name"],
@@ -84,11 +84,11 @@ async def update_staff_member(
     current_user: dict = Depends(check_permissions(["ADMIN", "HR"])),
 ):
     """Update staff member details"""
-    if not await execute_query(GET_STAFF_BY_ID_QUERY, (staff_id,), fetch_one=True):
+    if not execute_query(GET_STAFF_BY_ID_QUERY, (staff_id,), fetch_one=True):
         raise HTTPException(status_code=404, detail="Staff member not found")
 
     try:
-        await execute_query(
+        execute_query(
             UPDATE_STAFF_QUERY,
             (
                 staff_data["full_name"],
@@ -112,7 +112,7 @@ async def get_department_schedule(
     current_user: dict = Depends(check_permissions(["ADMIN", "HR", "DOCTOR", "NURSE"])),
 ):
     """Get staff schedule for a specific department"""
-    schedules = await execute_query(
+    schedules = execute_query(
         GET_STAFF_SCHEDULE_QUERY, (department_id,), fetch_all=True
     )
     return schedules

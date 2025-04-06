@@ -22,7 +22,7 @@ async def get_all_admissions(
             query = query.replace("ORDER BY", f"WHERE a.status = %s ORDER BY")
             params.append(status)
 
-        admissions = await execute_query(query, tuple(params), fetch_all=True)
+        admissions = execute_query(query, tuple(params), fetch_all=True)
         return admissions
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -36,11 +36,11 @@ async def create_admission(
     """Create new admission"""
     try:
         # Check bed availability
-        available_beds = await execute_query(GET_AVAILABLE_BEDS_QUERY, fetch_all=True)
+        available_beds = execute_query(GET_AVAILABLE_BEDS_QUERY, fetch_all=True)
         if not available_beds:
             raise HTTPException(status_code=400, detail="No beds available")
 
-        result = await execute_query(
+        result = execute_query(
             CREATE_ADMISSION_QUERY,
             (
                 admission_data["patient_id"],
@@ -71,7 +71,7 @@ async def discharge_patient(
 ):
     """Discharge patient"""
     try:
-        await execute_query(
+        execute_query(
             UPDATE_ADMISSION_QUERY,
             (
                 "DISCHARGED",
@@ -92,5 +92,5 @@ async def discharge_patient(
 @router.get("/beds/available")
 async def get_available_beds(current_user: dict = Depends(get_current_user)):
     """Get available beds"""
-    beds = await execute_query(GET_AVAILABLE_BEDS_QUERY, fetch_all=True)
+    beds = execute_query(GET_AVAILABLE_BEDS_QUERY, fetch_all=True)
     return beds

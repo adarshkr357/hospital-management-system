@@ -6,31 +6,36 @@ from ..core.errors import DatabaseError
 
 
 def execute_query(
-    query: str, params: tuple = None, fetch_all: bool = False, fetch_one: bool = False
-) -> Optional[List[Dict[str, Any]]]:
+    query: str,
+    params: tuple = None,
+    fetch_all: bool = False,
+    fetch_one: bool = False
+) -> Optional[Any]:
     """
-    Execute database query with error handling and connection management.
+    Execute a database query with error handling and connection management.
+    Returns:
+      - If fetch_all is True, a list of dicts.
+      - If fetch_one is True, a single dict.
+      - Otherwise, returns the status message.
     """
-    connection = None
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor(cursor_factory=RealDictCursor)
-
-        cursor.execute(query, params)
-
-        if fetch_all:
-            result = cursor.fetchall()
-            return [dict(row) for row in result]
-        elif fetch_one:
-            result = cursor.fetchone()
-            return dict(result) if result else None
-        else:
-            connection.commit()
-            return cursor.statusmessage
-
+        with get_db_connection() as connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(query, params)
+                
+                # If you expect rows back, fetch and commit.
+                if fetch_all:
+                    result = cursor.fetchall()
+                    connection.commit()
+                    return [dict(row) for row in result]
+                elif fetch_one:
+                    result = cursor.fetchone()
+                    connection.commit()
+                    return dict(result) if result else None
+                else:
+                    connection.commit()
+                    return cursor.statusmessage
     except psycopg2.IntegrityError as e:
-        if connection:
-            connection.rollback()
         if "unique constraint" in str(e).lower():
             raise DatabaseError("Duplicate entry found")
         elif "foreign key constraint" in str(e).lower():
@@ -38,36 +43,21 @@ def execute_query(
         else:
             raise DatabaseError(f"Integrity error: {str(e)}")
     except psycopg2.Error as e:
-        if connection:
-            connection.rollback()
         raise DatabaseError(f"Database error: {str(e)}")
     except Exception as e:
-        if connection:
-            connection.rollback()
         raise DatabaseError(f"Unexpected error: {str(e)}")
-    finally:
-        if connection:
-            connection.close()
-
 
 def execute_batch(queries: List[tuple]) -> None:
     """
     Execute multiple queries in a single transaction.
     Each tuple should contain (query, params)
     """
-    connection = None
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor()
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                for query, params in queries:
+                    cursor.execute(query, params)
 
-        for query, params in queries:
-            cursor.execute(query, params)
-
-        connection.commit()
+                connection.commit()
     except Exception as e:
-        if connection:
-            connection.rollback()
         raise DatabaseError(f"Batch execution failed: {str(e)}")
-    finally:
-        if connection:
-            connection.close()

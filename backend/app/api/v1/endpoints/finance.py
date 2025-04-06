@@ -33,7 +33,7 @@ async def get_all_bills(
             )
             params.extend([start_date, end_date])
 
-        bills = await execute_query(query, tuple(params), fetch_all=True)
+        bills = execute_query(query, tuple(params), fetch_all=True)
         return bills
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -46,7 +46,7 @@ async def create_bill(
 ):
     """Create new bill"""
     try:
-        result = await execute_query(
+        result = execute_query(
             CREATE_BILL_QUERY,
             (
                 bill_data["patient_id"],
@@ -74,7 +74,7 @@ async def update_bill_status(
 ):
     """Update bill status"""
     try:
-        await execute_query(UPDATE_BILL_STATUS_QUERY, (status, payment_method, bill_id))
+        execute_query(UPDATE_BILL_STATUS_QUERY, (status, payment_method, bill_id))
         return {"message": "Bill status updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -86,7 +86,7 @@ async def get_revenue_report(
 ):
     """Get revenue report"""
     try:
-        report = await execute_query(GET_REVENUE_REPORT_QUERY, fetch_one=True)
+        report = execute_query(GET_REVENUE_REPORT_QUERY, fetch_one=True)
         return report
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -106,7 +106,7 @@ async def get_insurance_claims(
             query = query.replace("ORDER BY", f"WHERE ic.status = %s ORDER BY")
             params.append(status)
 
-        claims = await execute_query(query, tuple(params), fetch_all=True)
+        claims = execute_query(query, tuple(params), fetch_all=True)
         return claims
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -119,7 +119,7 @@ async def create_insurance_claim(
 ):
     """Create new insurance claim"""
     try:
-        result = await execute_query(
+        result = execute_query(
             CREATE_INSURANCE_CLAIM_QUERY,
             (
                 claim_data["patient_id"],

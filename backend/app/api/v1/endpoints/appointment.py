@@ -33,7 +33,7 @@ async def get_all_appointments(
             query = query.replace("ORDER BY", f"WHERE a.status = %s ORDER BY")
             params.append(status)
 
-        appointments = await execute_query(query, tuple(params), fetch_all=True)
+        appointments = execute_query(query, tuple(params), fetch_all=True)
         return appointments
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -46,7 +46,7 @@ async def create_appointment(
 ):
     """Create new appointment"""
     try:
-        result = await execute_query(
+        result = execute_query(
             CREATE_APPOINTMENT_QUERY,
             (
                 appointment_data["patient_id"],
@@ -86,7 +86,7 @@ async def update_appointment_status(
         )
 
     try:
-        await execute_query(UPDATE_APPOINTMENT_QUERY, (status, notes, appointment_id))
+        execute_query(UPDATE_APPOINTMENT_QUERY, (status, notes, appointment_id))
         return {"message": "Appointment updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -97,7 +97,7 @@ async def get_doctor_appointments(
     doctor_id: int, current_user: dict = Depends(get_current_user)
 ):
     """Get all appointments for a specific doctor"""
-    appointments = await execute_query(
+    appointments = execute_query(
         GET_DOCTOR_APPOINTMENTS_QUERY, (doctor_id,), fetch_all=True
     )
     return appointments

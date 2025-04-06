@@ -16,22 +16,22 @@ api_router = APIRouter()
 # Include all routers
 api_router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 
-api_router.include_router(patient.router, prefix="/patients", tags=["Patients"])
+api_router.include_router(patient.router, prefix="/patient", tags=["Patient"])
 
 api_router.include_router(staff.router, prefix="/staff", tags=["Staff"])
 
 api_router.include_router(finance.router, prefix="/finance", tags=["Finance"])
 
 api_router.include_router(
-    department.router, prefix="/departments", tags=["Departments"]
+    department.router, prefix="/department", tags=["Department"]
 )
 
 api_router.include_router(
-    appointment.router, prefix="/appointments", tags=["Appointments"]
+    appointment.router, prefix="/appointment", tags=["Appointment"]
 )
 
-api_router.include_router(admission.router, prefix="/admissions", tags=["Admissions"])
+api_router.include_router(admission.router, prefix="/admission", tags=["Admission"])
 
 api_router.include_router(
-    notification.router, prefix="/notifications", tags=["Notifications"]
+    notification.router, prefix="/notification", tags=["Notification"]
 )

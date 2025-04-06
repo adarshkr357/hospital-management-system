@@ -33,6 +33,26 @@ CREATE_TABLES_QUERIES = [
     );
     """,
     """
+    CREATE TABLE IF NOT EXISTS patient_allergies (
+        id SERIAL PRIMARY KEY,
+        patient_id INTEGER REFERENCES patients(id),
+        allergy_name VARCHAR(255) NOT NULL,
+        severity VARCHAR(50),
+        diagnosed_date DATE,
+        notes TEXT
+    );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS patient_medical_history (
+        id SERIAL PRIMARY KEY,
+        patient_id INTEGER REFERENCES patients(id),
+        condition VARCHAR(255) NOT NULL,
+        diagnosed_date DATE,
+        treatment TEXT,
+        notes TEXT
+    );
+    """,
+    """
     CREATE TABLE IF NOT EXISTS medical_records (
         id SERIAL PRIMARY KEY,
         patient_id INTEGER REFERENCES patients(id),
@@ -95,7 +115,7 @@ CREATE_TABLES_QUERIES = [
         staff_id INTEGER REFERENCES staff(id),
         shift_start TIME NOT NULL,
         shift_end TIME NOT NULL,
-        work_days VARCHAR(20)[], -- Array of days ['MON', 'TUE', etc.]
+        work_days VARCHAR(20)[],
         is_overtime BOOLEAN DEFAULT FALSE
     );
     """,
@@ -165,7 +185,7 @@ CREATE_TABLES_QUERIES = [
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         read BOOLEAN DEFAULT FALSE
     );
-    """,
+    """
 ]
 
 

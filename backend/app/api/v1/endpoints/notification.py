@@ -18,7 +18,7 @@ async def get_user_notifications(
         if unread_only:
             query = query.replace("ORDER BY", "WHERE read = FALSE ORDER BY")
 
-        notifications = await execute_query(
+        notifications = execute_query(
             query, (current_user["id"],), fetch_all=True
         )
         return notifications
@@ -32,7 +32,7 @@ async def create_notification(
 ):
     """Create new notification"""
     try:
-        result = await execute_query(
+        result = execute_query(
             CREATE_NOTIFICATION_QUERY,
             (
                 notification_data["user_id"],
@@ -55,7 +55,7 @@ async def mark_notification_as_read(
 ):
     """Mark notification as read"""
     try:
-        result = await execute_query(
+        result = execute_query(
             MARK_NOTIFICATION_READ_QUERY,
             (notification_id, current_user["id"]),
             fetch_one=True,
@@ -73,7 +73,7 @@ async def delete_notification(
 ):
     """Delete notification"""
     try:
-        result = await execute_query(
+        result = execute_query(
             DELETE_NOTIFICATION_QUERY,
             (notification_id, current_user["id"]),
             fetch_one=True,

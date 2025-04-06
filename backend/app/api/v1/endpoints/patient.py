@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List, Optional
-from datetime import date
 from ....core.security import get_current_user, check_permissions
 from ....utils.db_utils import execute_query
 from ....utils.validators import validate_email, validate_phone
@@ -26,7 +25,7 @@ async def get_all_patients(
             search_term = f"%{search}%"
             params.extend([search_term, search_term])
 
-        patients = await execute_query(query, tuple(params), fetch_all=True)
+        patients = execute_query(query, tuple(params), fetch_all=True)
         return patients
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -35,7 +34,7 @@ async def get_all_patients(
 @router.get("/{patient_id}")
 async def get_patient(patient_id: int, current_user: dict = Depends(get_current_user)):
     """Get specific patient details"""
-    patient = await execute_query(
+    patient = execute_query(
         GET_PATIENT_BY_ID_QUERY, (patient_id,), fetch_one=True
     )
     if not patient:
@@ -56,7 +55,7 @@ async def create_patient(
         raise HTTPException(status_code=400, detail="Invalid phone number")
 
     try:
-        result = await execute_query(
+        result = execute_query(
             CREATE_PATIENT_QUERY,
             (
                 patient_data["full_name"],
@@ -86,7 +85,7 @@ async def update_patient(
 ):
     """Update patient information"""
     try:
-        result = await execute_query(
+        result = execute_query(
             UPDATE_PATIENT_QUERY,
             (
                 patient_data["full_name"],
@@ -116,7 +115,7 @@ async def add_patient_allergy(
 ):
     """Add patient allergy"""
     try:
-        result = await execute_query(
+        result = execute_query(
             ADD_PATIENT_ALLERGY_QUERY,
             (
                 patient_id,
@@ -140,7 +139,7 @@ async def add_medical_history(
 ):
     """Add medical history entry"""
     try:
-        result = await execute_query(
+        result = execute_query(
             ADD_MEDICAL_HISTORY_QUERY,
             (
                 patient_id,
@@ -165,7 +164,7 @@ async def get_patient_visits(
 ):
     """Get patient visit history"""
     try:
-        visits = await execute_query(
+        visits = execute_query(
             GET_PATIENT_VISITS_QUERY, (patient_id,), fetch_all=True
         )
         return visits
@@ -181,7 +180,7 @@ async def record_patient_visit(
 ):
     """Record new patient visit"""
     try:
-        result = await execute_query(
+        result = execute_query(
             """
             INSERT INTO patient_visits (
                 patient_id, doctor_id, visit_date,
